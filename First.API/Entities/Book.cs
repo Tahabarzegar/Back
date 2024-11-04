@@ -6,7 +6,7 @@ using First.API.Entities.Base;
 
 namespace First.API.Entities
 {
-    public class Book : Thing
+    public class Book 
     {
         public string? Title { get; set; }
         public string? Writer { get; set; }

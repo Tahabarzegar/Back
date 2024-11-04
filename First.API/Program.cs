@@ -2,6 +2,7 @@ using System.Linq;
 using First.API.Data;
 using First.API.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -11,7 +12,19 @@ builder.Services.AddDbContext<FirstDB>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MainDB"));
 }
 );
+builder.Services.AddCors(Options =>
+{
+    Options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowAnyOrigin();
+    });
+});
 var app = builder.Build();
+
+app.UseCors();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -25,10 +38,15 @@ app.MapPost("/members/add", (FirstDB db, Member member) =>
     db.SaveChanges();
 }
 );
-app.MapPost("/members/remove", (FirstDB db, Member member) =>
+app.MapPost("/members/remove/{id}", (FirstDB db, int id) =>
 {
-    db.Members.Remove(member);
+    var member=db.Members.Find(id);
+    if (member!=null)
+    {
+        db.Members.Remove(member);
     db.SaveChanges();
+
+    }
 }
 );
 app.MapGet("/members/list", (FirstDB db) =>
@@ -48,10 +66,15 @@ app.MapPost("/books/add", (FirstDB db, Book book) =>
     db.SaveChanges();
 }
 );
-app.MapPost("/books/remove", (FirstDB db, Book book) =>
+app.MapPost("/books/remove/{id}", (FirstDB db, int id) =>
 {
-    db.Books.Remove(book);
+    var book=db.Books.Find(id);
+    if (book!=null)
+    {
+        db.Books.Remove(book);
     db.SaveChanges();
+
+    }
 }
 );
 app.MapGet("/books/list", (FirstDB db) =>
@@ -71,15 +94,21 @@ app.MapPost("/borrows/add", (FirstDB db, Borrow borrow) =>
     db.SaveChanges();
 }
 );
-app.MapPost("/borrows/remove", (FirstDB db, Borrow borrow) =>
+
+app.MapPost("/borrows/remove/{id}", (FirstDB db, int id) =>
 {
-    db.Borrows.Update(borrow);
+    var borrow=db.Borrows.Find(id);
+    if (borrow!=null)
+    {
+        db.Borrows.Remove(borrow);
     db.SaveChanges();
+
+    }
 }
 );
 app.MapGet("/borrows/list", (FirstDB db) =>
 {
-    return db.Borrows.Include(b=>b.Book).Include(m=>m.Member).ToList();
+    return db.Borrows.Include(b => b.Book).Include(m => m.Member).ToList();
 
 }
 );
