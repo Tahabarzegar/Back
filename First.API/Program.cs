@@ -38,15 +38,12 @@ app.MapPost("/members/add", (FirstDB db, Member member) =>
     db.SaveChanges();
 }
 );
-app.MapPost("/members/remove/{id}", (FirstDB db, int id) =>
+app.MapPost("/members/remove", (FirstDB db,Member member) =>
 {
-    var member=db.Members.Find(id);
-    if (member!=null)
-    {
+
         db.Members.Remove(member);
     db.SaveChanges();
 
-    }
 }
 );
 app.MapGet("/members/list", (FirstDB db) =>
@@ -66,15 +63,13 @@ app.MapPost("/books/add", (FirstDB db, Book book) =>
     db.SaveChanges();
 }
 );
-app.MapPost("/books/remove/{id}", (FirstDB db, int id) =>
+app.MapPost("/books/remove", (FirstDB db,Book book) =>
 {
-    var book=db.Books.Find(id);
-    if (book!=null)
-    {
-        db.Books.Remove(book);
+
+     db.Books.Remove(book);
     db.SaveChanges();
 
-    }
+
 }
 );
 app.MapGet("/books/list", (FirstDB db) =>
@@ -95,16 +90,14 @@ app.MapPost("/borrows/add", (FirstDB db, Borrow borrow) =>
 }
 );
 
-app.MapPost("/borrows/remove/{id}", (FirstDB db, int id) =>
+app.MapPost("/borrows/remove", (FirstDB db,Borrow borrow) =>
 {
-    var borrow=db.Borrows.Find(id);
-    if (borrow!=null)
-    {
-        db.Borrows.Remove(borrow);
+
+    db.Borrows.Remove(borrow);
     db.SaveChanges();
 
     }
-}
+
 );
 app.MapGet("/borrows/list", (FirstDB db) =>
 {
